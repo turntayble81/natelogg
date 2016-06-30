@@ -5,17 +5,35 @@
         <script src="/socket.io/socket.io.js"></script>
         <script>
             var socket = io();
+            var console;
+
+            window.onload = function() {
+                console = document.getElementById('console');
+            };
+
+            function toggleLog(el, log) {
+                var checked = el.checked;
+                socket.emit('toggleLog', {
+                    log     : log,
+                    enabled : checked
+                });
+            }
+
+            socket.on('logData', function(data) {
+                console.value += '\n' + data;
+                console.scrollTop = console.scrollHeight;
+            });
         </script>
     </head>
     <body>
-        Main Page
         <table>
         <% for(var i=0; i<logs.length; i++) { %>
             <tr>
+                <td><input type="checkbox" onclick="toggleLog(this, '<%= logs[i] %>')" /></td>
                 <td><%= logs[i] %></td>
             </tr>
         <% } %>
         </table>
-
+        <textarea id="console" style="width: 800px; height: 400px; font-family: monospace;"></textarea>
     </body>
 </html>
