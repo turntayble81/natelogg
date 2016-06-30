@@ -1,9 +1,12 @@
-var express = require('express');
-var fs      = require('fs');
-var config = require('./config');
-var app = express();
+var express  = require('express');
+var socketio = require('socket.io');
+var morgan   = require('morgan');
+var fs       = require('fs');
+var config   = require('./config');
+var app      = express();
 
 app.set('view engine', 'ejs');
+app.use(morgan('dev'));
 
 app.get('/', function (req, res) {
     fs.readdir(config.logDirectory, function(err, logs) {
@@ -16,6 +19,15 @@ app.get('/', function (req, res) {
     });
 });
 
-app.listen(config.port, function () {
+var server = app.listen(config.port, function () {
     console.log('Natelogg started on port %s', config.port);
+});
+var io = socketio(server);
+
+io.on('connection', function(socket) {
+    console.log('Client websocket connected.');
+
+    socket.on('disconnect', function() {
+        console.log('Client websocket disconnected.');
+    });
 });
