@@ -5,10 +5,10 @@
         <script src="/socket.io/socket.io.js"></script>
         <script>
             var socket = io();
-            var console;
+            var shell;
 
             window.onload = function() {
-                console = document.getElementById('console');
+                shell = document.getElementById('shell');
             };
 
             function toggleLog(el, log) {
@@ -20,11 +20,12 @@
             }
 
             socket.on('logData', function(data) {
-                var scrollAtBottom = (console.scrollHeight == (parseInt(console.style.height) + console.scrollTop)) ? true : false;
+                var scrollAtBottom = (shell.scrollHeight == (parseInt(shell.style.height) + shell.scrollTop)) ? true : false;
 
-                console.value += '\n' + data;
+                shell.innerHTML += '<br />' + data;
+
                 if(scrollAtBottom) {
-                    console.scrollTop = console.scrollHeight;
+                    shell.scrollTop = shell.scrollHeight;
                 }
             });
         </script>
@@ -38,6 +39,6 @@
             </tr>
         <% } %>
         </table>
-        <textarea id="console" style="width: 800px; height: 400px; font-family: monospace;"></textarea>
+        <div id="shell" style="width: 800px; height: 400px; font-family: monospace; background-color: black; color: white; overflow-y: auto;"></div>
     </body>
 </html>
