@@ -4,9 +4,12 @@ var morgan   = require('morgan');
 var fs       = require('fs');
 var Tail     = require('tail').Tail;
 var config   = require('./config');
+var Bunyan   = require('./parsers/bunyan');
 var app      = express();
 var watchers = {};
 var _socket;
+
+var bunyan = new Bunyan();
 
 app.set('view engine', 'ejs');
 app.use(morgan('dev'));
@@ -24,6 +27,8 @@ app.get('/', function (req, res) {
 
             watcher.unwatch();
             watcher.on('line', function(data) {
+                data = bunyan.handleLogLine(data);
+
                 _socket.emit('logData', data);
             });
             watcher.on('error', function(err) {

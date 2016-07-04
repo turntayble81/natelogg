@@ -4,16 +4,74 @@ var moment = require('moment');
 function Bunyan(opts) {
     var _this = this;
 
-    this.opts = opts;
+    this.TIME_UTC   = 1;  // the default, bunyan's native format
+    this.TIME_LOCAL = 2;
+
+    this.OM_LONG    = 1;
+    this.OM_JSON    = 2;
+    this.OM_INSPECT = 3;
+    this.OM_SIMPLE  = 4;
+    this.OM_SHORT   = 5;
+    this.OM_BUNYAN  = 6;
+
+    this.TRACE = 10;
+    this.DEBUG = 20;
+    this.INFO  = 30;
+    this.WARN  = 40;
+    this.ERROR = 50;
+    this.FATAL = 60;
+
+    this.OM_FROM_NAME = {
+        'long'    : this.OM_LONG,
+        'paul'    : this.OM_LONG,  /* backward compat */
+        'json'    : this.OM_JSON,
+        'inspect' : this.OM_INSPECT,
+        'simple'  : this.OM_SIMPLE,
+        'short'   : this.OM_SHORT,
+        'bunyan'  : this.OM_BUNYAN
+    };
+
+    this.opts = opts || {};
+
+    this.opts.args       = this.opts.args       || [];
+    this.opts.help       = this.opts.help       || false;
+    this.opts.color      = this.opts.color      || null;
+    this.opts.paginate   = this.opts.paginate   || null;
+    this.opts.outputMode = this.OM_FROM_NAME[this.opts.outputMode] || this.OM_LONG;
+    this.opts.jsonIndent = this.opts.jsonIndent || 2;
+    this.opts.level      = this.opts.level      || null;
+    this.opts.strict     = this.opts.strict     || false;
+    this.opts.pids       = this.opts.pids       || null;
+    this.opts.pidsType   = this.opts.pidsType   || null;
+    this.opts.timeFormat = this.opts.timeFormat || this.TIME_UTC;
+
+    // http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+    this.colors = {
+        'bold'      : [1, 22],
+        'italic'    : [3, 23],
+        'underline' : [4, 24],
+        'inverse'   : [7, 27],
+        'white'     : [37, 39],
+        'grey'      : [90, 39],
+        'black'     : [30, 39],
+        'blue'      : [34, 39],
+        'cyan'      : [36, 39],
+        'green'     : [32, 39],
+        'magenta'   : [35, 39],
+        'red'       : [31, 39],
+        'yellow'    : [33, 39]
+    };
 
     var levelFromName = {
-        'trace': TRACE,
-        'debug': DEBUG,
-        'info': INFO,
-        'warn': WARN,
-        'error': ERROR,
-        'fatal': FATAL
+        'trace' : this.TRACE,
+        'debug' : this.DEBUG,
+        'info'  : this.INFO,
+        'warn'  : this.WARN,
+        'error' : this.ERROR,
+        'fatal' : this.FATAL
     };
+
+    this.format = util.format;
 
     this.nameFromLevel = {};
     this.upperNameFromLevel = {};
@@ -63,7 +121,7 @@ Bunyan.prototype.handleLogLine = function(line) {
     return this.emitRecord(rec, line);
 }
 
-Bunyan.prototype.isValidRecord = isValidRecord(rec) {
+Bunyan.prototype.isValidRecord = function(rec) {
     if(rec.v == null ||
             rec.level == null ||
             rec.name == null ||
@@ -78,7 +136,7 @@ Bunyan.prototype.isValidRecord = isValidRecord(rec) {
     }
 };
 
-Bunyan.prototype.filterRecord(rec) {
+Bunyan.prototype.filterRecord = function(rec) {
     var opts = this.opts;
 
     if(opts.level && rec.level < opts.level) {
@@ -98,17 +156,18 @@ Bunyan.prototype.filterRecord(rec) {
 };
 
 Bunyan.prototype.emitRecord = function(rec, line) {
+    var _this = this;
     var opts = this.opts;
     var stylize = this.stylize;
     var short = false;
     var retval;
 
     switch (opts.outputMode) {
-    case OM_SHORT:
+    case this.OM_SHORT:
         short = true;
         /* jsl:fall-thru */
 
-    case OM_LONG:
+    case this.OM_LONG:
         //    [time] LEVEL: name[/comp]/pid on hostname (src): msg* (extras...)
         //        msg*
         //        --
@@ -119,29 +178,30 @@ Bunyan.prototype.emitRecord = function(rec, line) {
         // If 'res', show the response.
         // If 'err' and 'err.stack' then show that.
         if (!this.isValidRecord(rec)) {
-            return return line + '\n';
+            retval = line + '\n';
+            break;
         }
 
         delete rec.v;
 
         // Time.
         var time;
-        if (!short && opts.timeFormat === TIME_UTC) {
+        if (!short && opts.timeFormat === this.TIME_UTC) {
             // Fast default path: We assume the raw `rec.time` is a UTC time
             // in ISO 8601 format (per spec).
             time = '[' + rec.time + ']';
-        } else if (!moment && opts.timeFormat === TIME_UTC) {
+        } else if (!moment && opts.timeFormat === this.TIME_UTC) {
             // Don't require momentjs install, as long as not using TIME_LOCAL.
             time = rec.time.substr(11);
         } else {
             var tzFormat;
             var moTime = moment(rec.time);
             switch (opts.timeFormat) {
-            case TIME_UTC:
+            case this.TIME_UTC:
                 tzFormat = TIMEZONE_UTC_FORMATS[short ? 'short' : 'long'];
                 moTime.utc();
                 break;
-            case TIME_LOCAL:
+            case this.TIME_LOCAL:
                 tzFormat = TIMEZONE_LOCAL_FORMATS[short ? 'short' : 'long'];
                 break;
             default:
@@ -164,7 +224,7 @@ Bunyan.prototype.emitRecord = function(rec, line) {
             nameStr += '/' + rec.pid;
         delete rec.pid;
 
-        var level = (_this.upperPaddedNameFromLevel[rec.level] || 'LVL' + rec.level);
+        var level = (this.upperPaddedNameFromLevel[rec.level] || 'LVL' + rec.level);
         if (opts.color) {
             var colorFromLevel = {
                 10: 'white',    // TRACE
@@ -182,9 +242,9 @@ Bunyan.prototype.emitRecord = function(rec, line) {
         if (rec.src && rec.src.file) {
             var s = rec.src;
             if (s.func) {
-                src = format(' (%s:%d in %s)', s.file, s.line, s.func);
+                src = this.format(' (%s:%d in %s)', s.file, s.line, s.func);
             } else {
-                src = format(' (%s:%d)', s.file, s.line);
+                src = this.format(' (%s:%d)', s.file, s.line);
             }
             src = this.stylize(src, 'green');
         }
@@ -223,7 +283,7 @@ Bunyan.prototype.emitRecord = function(rec, line) {
                     return h + ': ' + headers[h];
                 }).join('\n');
             }
-            var s = format('%s %s HTTP/%s%s', req.method,
+            var s = this.format('%s %s HTTP/%s%s', req.method,
                 req.url,
                 req.httpVersion || '1.1',
                 headers
@@ -243,7 +303,7 @@ Bunyan.prototype.emitRecord = function(rec, line) {
                 }).join('\n');
             }
             delete req.trailers;
-            details.push(indent(s));
+            details.push(this.indent(s));
             // E.g. for extra 'foo' field on 'req', add 'req.foo' at
             // top-level. This *does* have the potential to stomp on a
             // literal 'req.foo' key.
@@ -266,7 +326,7 @@ Bunyan.prototype.emitRecord = function(rec, line) {
             delete client_req.headers;
             delete client_req.address;
             delete client_req.port;
-            s += format('%s %s HTTP/%s%s%s', client_req.method,
+            s += this.format('%s %s HTTP/%s%s%s', client_req.method,
                 client_req.url,
                 client_req.httpVersion || '1.1',
                 hostHeaderLine,
@@ -291,13 +351,13 @@ Bunyan.prototype.emitRecord = function(rec, line) {
             Object.keys(client_req).forEach(function (k) {
                 rec['client_req.' + k] = client_req[k];
             })
-            details.push(indent(s));
+            details.push(this.indent(s));
         }
 
         function _res(res) {
             var s = '';
             if (res.statusCode !== undefined) {
-                s += format('HTTP/1.1 %s %s\n', res.statusCode,
+                s += _this.format('HTTP/1.1 %s %s\n', res.statusCode,
                     http.STATUS_CODES[res.statusCode]);
                 delete res.statusCode;
             }
@@ -335,7 +395,7 @@ Bunyan.prototype.emitRecord = function(rec, line) {
             }
             delete res.trailer;
             if (s) {
-                details.push(indent(s));
+                details.push(_this.indent(s));
             }
             // E.g. for extra 'foo' field on 'res', add 'res.foo' at
             // top-level. This *does* have the potential to stomp on a
@@ -383,7 +443,7 @@ Bunyan.prototype.emitRecord = function(rec, line) {
                 stringified = true;
             }
             if (value.indexOf('\n') !== -1 || value.length > 50) {
-                details.push(indent(key + ': ' + value));
+                details.push(this.indent(key + ': ' + value));
             } else if (!stringified && (value.indexOf(' ') != -1 ||
                 value.length === 0))
             {
@@ -398,7 +458,7 @@ Bunyan.prototype.emitRecord = function(rec, line) {
         details = this.stylize(
             (details.length ? details.join('\n    --\n') + '\n' : ''), 'XXX');
         if (!short)
-            retval = format('%s %s: %s on %s%s:%s%s\n%s',
+            retval = this.format('%s %s: %s on %s%s:%s%s\n%s',
                 time,
                 level,
                 nameStr,
@@ -408,7 +468,7 @@ Bunyan.prototype.emitRecord = function(rec, line) {
                 extras,
                 details);
         else
-            retval = format('%s %s %s:%s%s\n%s',
+            retval = this.format('%s %s %s:%s%s\n%s',
                 time,
                 level,
                 nameStr,
@@ -417,25 +477,25 @@ Bunyan.prototype.emitRecord = function(rec, line) {
                 details);
         break;
 
-    case OM_INSPECT:
+    case this.OM_INSPECT:
         retval = (util.inspect(rec, false, Infinity, true) + '\n');
         break;
 
-    case OM_BUNYAN:
+    case this.OM_BUNYAN:
         retval = (JSON.stringify(rec, null, 0) + '\n');
         break;
 
-    case OM_JSON:
+    case this.OM_JSON:
         retval = (JSON.stringify(rec, null, opts.jsonIndent) + '\n');
         break;
 
-    case OM_SIMPLE:
+    case this.OM_SIMPLE:
         /* JSSTYLED */
         // <http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/SimpleLayout.html>
         if (!isValidRecord(rec)) {
             retval = line + '\n';
         }else {
-            retval = (format('%s - %s\n',
+            retval = (this.format('%s - %s\n',
                 this.upperNameFromLevel[rec.level] || 'LVL' + rec.level,
                 rec.msg));
         }
@@ -454,7 +514,7 @@ Bunyan.prototype.indent = function(s) {
 Bunyan.prototype.stylize = function(str, color) {
     if (!str)
         return '';
-    var codes = colors[color];
+    var codes = this.colors[color];
     if (codes) {
         return '\033[' + codes[0] + 'm' + str +
                      '\033[' + codes[1] + 'm';
