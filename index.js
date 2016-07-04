@@ -17,7 +17,11 @@ app.get('/', function (req, res) {
            return res.send('Can\'t read log directory ' + config.logDirectory); 
         }
         logs.forEach(function(log) {
-            var watcher = new Tail(config.logDirectory + '/' + log);
+            var watcher = new Tail(config.logDirectory + '/' + log, {
+                fromBeginning: false,
+                follow: true
+            });
+
             watcher.unwatch();
             watcher.on('line', function(data) {
                 _socket.emit('logData', data);
