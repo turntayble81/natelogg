@@ -518,8 +518,8 @@ Bunyan.prototype.emitRecord = function(rec, line) {
     case this.OM_SIMPLE:
         /* JSSTYLED */
         // <http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/SimpleLayout.html>
-        if (!isValidRecord(rec)) {
-            retval = line + '\n';
+        if (!this.isValidRecord(rec)) {
+            retval = line;
         }else {
             retval = (this.format('%s - %s\n',
                 this.upperNameFromLevel[rec.level] || 'LVL' + rec.level,
