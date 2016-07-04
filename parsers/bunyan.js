@@ -504,15 +504,15 @@ Bunyan.prototype.emitRecord = function(rec, line) {
         break;
 
     case this.OM_INSPECT:
-        retval = (util.inspect(rec, false, Infinity, true) + '\n');
+        retval = (util.inspect(rec, false, Infinity, true));
         break;
 
     case this.OM_BUNYAN:
-        retval = (JSON.stringify(rec, null, 0) + '\n');
+        retval = (JSON.stringify(rec, null, 0));
         break;
 
     case this.OM_JSON:
-        retval = (JSON.stringify(rec, null, opts.jsonIndent) + '\n');
+        retval = (JSON.stringify(rec, null, opts.jsonIndent));
         break;
 
     case this.OM_SIMPLE:
