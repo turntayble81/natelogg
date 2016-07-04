@@ -20,8 +20,12 @@
             }
 
             socket.on('logData', function(data) {
+                var scrollAtBottom = (console.scrollHeight == (parseInt(console.style.height) + console.scrollTop)) ? true : false;
+
                 console.value += '\n' + data;
-                console.scrollTop = console.scrollHeight;
+                if(scrollAtBottom) {
+                    console.scrollTop = console.scrollHeight;
+                }
             });
         </script>
     </head>
