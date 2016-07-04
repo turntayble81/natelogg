@@ -21,6 +21,15 @@ function Bunyan(opts) {
     this.ERROR = 50;
     this.FATAL = 60;
 
+    this.TIMEZONE_UTC_FORMATS = {
+        long:  '[[]YYYY-MM-DD[T]HH:mm:ss.SSS[Z][]]',
+        short: 'HH:mm:ss.SSS[Z]'
+    };
+    this.TIMEZONE_LOCAL_FORMATS = {
+        long:  '[[]YYYY-MM-DD[T]HH:mm:ss.SSSZ[]]',
+        short: 'HH:mm:ss.SSS'
+    };
+
     this.OM_FROM_NAME = {
         'long'    : this.OM_LONG,
         'paul'    : this.OM_LONG,  /* backward compat */
@@ -215,11 +224,11 @@ Bunyan.prototype.emitRecord = function(rec, line) {
             var moTime = moment(rec.time);
             switch (opts.timeFormat) {
             case this.TIME_UTC:
-                tzFormat = TIMEZONE_UTC_FORMATS[short ? 'short' : 'long'];
+                tzFormat = this.TIMEZONE_UTC_FORMATS[short ? 'short' : 'long'];
                 moTime.utc();
                 break;
             case this.TIME_LOCAL:
-                tzFormat = TIMEZONE_LOCAL_FORMATS[short ? 'short' : 'long'];
+                tzFormat = this.TIMEZONE_LOCAL_FORMATS[short ? 'short' : 'long'];
                 break;
             default:
                 throw new Error('unexpected timeFormat: ' + opts.timeFormat);
