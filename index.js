@@ -9,7 +9,9 @@ var app      = express();
 var watchers = {};
 var _socket;
 
-var bunyan = new Bunyan();
+var bunyan = new Bunyan({
+    colorMode: 'HTML'
+});
 
 app.set('view engine', 'ejs');
 app.use(morgan('dev'));

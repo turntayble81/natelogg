@@ -35,7 +35,8 @@ function Bunyan(opts) {
 
     this.opts.args       = this.opts.args       || [];
     this.opts.help       = this.opts.help       || false;
-    this.opts.color      = this.opts.color      || null;
+    this.opts.color      = this.opts.color      || true;
+    this.opts.colorMode  = this.opts.colorMode  || 'ANSI';  //ANSI by default or HTML
     this.opts.paginate   = this.opts.paginate   || null;
     this.opts.outputMode = this.OM_FROM_NAME[this.opts.outputMode] || this.OM_LONG;
     this.opts.jsonIndent = this.opts.jsonIndent || 2;
@@ -46,7 +47,7 @@ function Bunyan(opts) {
     this.opts.timeFormat = this.opts.timeFormat || this.TIME_UTC;
 
     // http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
-    this.colors = {
+    this.ANSIColors = {
         'bold'      : [1, 22],
         'italic'    : [3, 23],
         'underline' : [4, 24],
@@ -60,6 +61,22 @@ function Bunyan(opts) {
         'magenta'   : [35, 39],
         'red'       : [31, 39],
         'yellow'    : [33, 39]
+    };
+
+    this.HTMLColors = {
+        'bold'      : ['<span style="font-weight: bold;">', '</span>'],
+        'italic'    : ['<span style="font-style: italic;">', '</span>'],
+        'underline' : ['<span style="text-decoration: underline;">', '</span>'],
+        'inverse'   : ['<span style="filter: invert(100%);">', '</span>'],
+        'white'     : ['<span style="color: white;">', '</span>'],
+        'grey'      : ['<span style="color: grey;">', '</span>'],
+        'black'     : ['<span style="color: black;">', '</span>'],
+        'blue'      : ['<span style="color: blue;">', '</span>'],
+        'cyan'      : ['<span style="color: cyan;">', '</span>'],
+        'green'     : ['<span style="color: green;">', '</span>'],
+        'magenta'   : ['<span style="color: magenta;">', '</span>'],
+        'red'       : ['<span style="color: red;">', '</span>'],
+        'yellow'    : ['<span style="color: yellow">', '</span>']
     };
 
     var levelFromName = {
@@ -92,25 +109,25 @@ Bunyan.prototype.handleLogLine = function(line) {
     var rec;
     if(!line) {
         if(!opts.strict) {
-            return line + '\n';
+            return line;
         }
     }else if (line[0] !== '{') {
         if(!opts.strict) {
-            return line + '\n';  // not JSON
+            return line;  // not JSON
         }
     }else {
         try {
             rec = JSON.parse(line);
         }catch(e) {
             if(!opts.strict) {
-                return line + '\n';
+                return line;
             }
         }
     }
 
     if(!this.isValidRecord(rec)) {
         if(!opts.strict) {
-            return line + '\n';
+            return line;
         }
     }
 
@@ -178,7 +195,7 @@ Bunyan.prototype.emitRecord = function(rec, line) {
         // If 'res', show the response.
         // If 'err' and 'err.stack' then show that.
         if (!this.isValidRecord(rec)) {
-            retval = line + '\n';
+            retval = line;
             break;
         }
 
@@ -512,13 +529,18 @@ Bunyan.prototype.indent = function(s) {
 };
 
 Bunyan.prototype.stylize = function(str, color) {
+    var opts = this.opts;
+
     if (!str)
         return '';
-    var codes = this.colors[color];
-    if (codes) {
+
+    var codes = this[opts.colorMode + 'Colors'][color];
+    if(codes && opts.colorMode == 'ANSI') {
         return '\033[' + codes[0] + 'm' + str +
                      '\033[' + codes[1] + 'm';
-    } else {
+    }else if(codes && opts.colorMode == 'HTML') {
+        return codes[0] + str + codes[1];
+    }else {
         return str;
     }
 };

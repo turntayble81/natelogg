@@ -22,7 +22,7 @@
             socket.on('logData', function(data) {
                 var scrollAtBottom = (shell.scrollHeight == (parseInt(shell.style.height) + shell.scrollTop)) ? true : false;
 
-                shell.innerHTML += '<br />' + data;
+                shell.innerHTML += '<pre>' + data + '</pre>';
 
                 if(scrollAtBottom) {
                     shell.scrollTop = shell.scrollHeight;
@@ -39,6 +39,6 @@
             </tr>
         <% } %>
         </table>
-        <div id="shell" style="width: 800px; height: 400px; font-family: monospace; background-color: black; color: white; overflow-y: auto;"></div>
+        <div id="shell" style="width: 800px; height: 400px; background-color: black; color: white; overflow-y: auto;"></div>
     </body>
 </html>
