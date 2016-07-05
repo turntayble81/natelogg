@@ -3,10 +3,57 @@
     <head>
         <title>NateLogg</title>
         <style>
+            html, body {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+            }
             pre {
                 margin: 2px 0;
                 white-space: pre-wrap;
                 word-wrap: break-word;
+            }
+
+            #main {
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+            }
+
+            #left-panel {
+                float: left;
+                width: 200px;
+                height: 100%;
+                background-color: #000;
+                border-right: #838181 4px solid;
+                font-family: monospace;
+                font-size: 10px;
+                color: #fff;
+            }
+
+            .left-panel-header {
+                display: inline-block;
+                height: 32px;
+                width: 100%;
+                text-align: center;
+                line-height: 32px;
+                font-size: 12px;
+                font-weight: bold;
+                background-color: #222;
+            }
+
+            #right-panel {
+                width: auto;
+                height: 100%;
+                overflow: hidden;
+            }
+
+            #shell {
+                width: 100%;
+                height: 100%;
+                background-color: black;
+                color: white;
+                overflow-y: auto;
             }
         </style>
         <script src="/socket.io/socket.io.js"></script>
@@ -27,7 +74,7 @@
             }
 
             socket.on('logData', function(data) {
-                var scrollAtBottom = (shell.scrollHeight == (parseInt(shell.style.height) + shell.scrollTop)) ? true : false;
+                var scrollAtBottom = (shell.scrollHeight == (shell.offsetHeight + shell.scrollTop)) ? true : false;
 
                 shell.innerHTML += '<pre>' + data + '</pre>';
 
@@ -38,14 +85,23 @@
         </script>
     </head>
     <body>
-        <table>
-        <% for(var i=0; i<logs.length; i++) { %>
-            <tr>
-                <td><input type="checkbox" onclick="toggleLog(this, '<%= logs[i] %>')" /></td>
-                <td><%= logs[i] %></td>
-            </tr>
-        <% } %>
-        </table>
-        <div id="shell" style="width: 800px; height: 400px; background-color: black; color: white; overflow-y: auto;"></div>
+        <div id="main">
+            <div id="left-panel">
+                <span class="left-panel-header">
+                    Logs
+                </span>
+                <table>
+                <% for(var i=0; i<logs.length; i++) { %>
+                    <tr>
+                        <td><input type="checkbox" onclick="toggleLog(this, '<%= logs[i] %>')" /></td>
+                        <td><%= logs[i] %></td>
+                    </tr>
+                <% } %>
+                </table>
+            </div>
+            <div id="right-panel">
+                <div id="shell"></div>
+            </div>
+        </div>
     </body>
 </html>
