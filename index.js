@@ -4,11 +4,11 @@ var morgan          = require('morgan');
 var fs              = require('fs');
 var Tail            = require('tail').Tail;
 var config          = require('./config');
-var Bunyan          = require('./formatters/bunyan');
+var formatters      = require('./formatters');
 var app             = express();
 var watchers        = {};
 
-var bunyan = new Bunyan({
+var bunyan = new formatters.Bunyan({
     colorMode: 'HTML'
 });
 
