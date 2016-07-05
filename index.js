@@ -4,7 +4,7 @@ var morgan   = require('morgan');
 var fs       = require('fs');
 var Tail     = require('tail').Tail;
 var config   = require('./config');
-var Bunyan   = require('./parsers/bunyan');
+var Bunyan   = require('./formatters/bunyan');
 var app      = express();
 var watchers = {};
 var _socket;
