@@ -74,12 +74,21 @@
         <script>
             var socket = io();
             var shell;
+            var maxHistoryLines = 1000;
 
             window.onload = function() {
                 shell = document.getElementById('shell');
                 document.getElementById('font-size').onchange = function() {
                     shell.style.fontSize = this.value + 'px';
-                }
+                };
+                document.getElementById('max-history-lines').onchange = function() {
+                    var val = parseInt(this.value);
+                    if(val === 0) {
+                        maxHistoryLines = Infinity;
+                    }else {
+                        maxHistoryLines = val;
+                    }
+                };
             };
 
             function toggleLog(el, log) {
@@ -92,8 +101,14 @@
 
             socket.on('logData', function(data) {
                 var scrollAtBottom = (shell.scrollHeight == (shell.offsetHeight + shell.scrollTop)) ? true : false;
+                var pre = document.createElement('pre');
+                var lines = shell.getElementsByTagName('pre');
 
-                shell.innerHTML += '<pre>' + data + '</pre>';
+                if(lines.length >= maxHistoryLines) {
+                    shell.removeChild(lines[0]);
+                }
+                pre.innerHTML=data;
+                shell.appendChild(pre);
 
                 if(scrollAtBottom) {
                     shell.scrollTop = shell.scrollHeight;
@@ -151,8 +166,10 @@
                             <td>
                                 <select id="max-history-lines">
                                     <option value="0">&infin;</option>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
                                     <option value="100">100</option>
-                                    <option value="1000">1,000</option>
+                                    <option value="1000" selected>1,000</option>
                                     <option value="10000">10,000</option>
                                 </select>
                             </td>
