@@ -72,9 +72,10 @@
         </style>
         <script src="/socket.io/socket.io.js"></script>
         <script>
-            var socket = io();
-            var shell;
+            var socket          = io();
+            var historyLength   = 0;
             var maxHistoryLines = 1000;
+            var shell;
 
             window.onload = function() {
                 shell = document.getElementById('shell');
@@ -103,12 +104,19 @@
                 var scrollAtBottom = (shell.scrollHeight == (shell.offsetHeight + shell.scrollTop)) ? true : false;
                 var pre = document.createElement('pre');
                 var lines = shell.getElementsByTagName('pre');
+                var removeLength;
+                var n;
 
-                if(lines.length >= maxHistoryLines) {
-                    shell.removeChild(lines[0]);
+                if(historyLength >= maxHistoryLines) {
+                    removeLength = historyLength - maxHistoryLines;
+                    for(n=0; n<=removeLength; n++) {
+                        shell.removeChild(shell.children[0]);
+                        historyLength--;
+                    }
                 }
                 pre.innerHTML=data;
                 shell.appendChild(pre);
+                historyLength++;
 
                 if(scrollAtBottom) {
                     shell.scrollTop = shell.scrollHeight;
@@ -166,8 +174,6 @@
                             <td>
                                 <select id="max-history-lines">
                                     <option value="0">&infin;</option>
-                                    <option value="5">5</option>
-                                    <option value="10">10</option>
                                     <option value="100">100</option>
                                     <option value="1000" selected>1,000</option>
                                     <option value="10000">10,000</option>
