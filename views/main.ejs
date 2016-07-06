@@ -64,6 +64,7 @@
             #shell {
                 width: 100%;
                 height: 100%;
+                font-size: 12px;
                 background-color: black;
                 color: white;
                 overflow-y: auto;
@@ -76,6 +77,9 @@
 
             window.onload = function() {
                 shell = document.getElementById('shell');
+                document.getElementById('font-size').onchange = function() {
+                    shell.style.fontSize = this.value + 'px';
+                }
             };
 
             function toggleLog(el, log) {
@@ -136,7 +140,7 @@
                                 <select id="font-size">
                                     <option value="8">8</option>
                                     <option value="10">10</option>
-                                    <option value="12">12</option>
+                                    <option value="12" selected>12</option>
                                     <option value="14">14</option>
                                     <option value="16">16</option>
                                 </select>
