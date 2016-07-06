@@ -23,6 +23,10 @@
                 width: 100%;
             }
 
+            input[type="button"] {
+                width: 100%;
+            }
+
             #main {
                 width: 100%;
                 height: 100%;
@@ -89,6 +93,9 @@
                     }else {
                         maxHistoryLines = val;
                     }
+                };
+                document.getElementById('clear-history').onclick = function() {
+                    shell.innerHTML = '';
                 };
             };
 
@@ -178,6 +185,11 @@
                                     <option value="1000" selected>1,000</option>
                                     <option value="10000">10,000</option>
                                 </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="button" id="clear-history" value="Clear History" />
                             </td>
                         </tr>
                     </table>
