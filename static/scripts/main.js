@@ -28,6 +28,7 @@ window.onload = function() {
 
     $('#clear-history').click(function() {
         shell.html('');
+        historyLength = 0;
     });
 
     $('input[name=formatter]').change(function() {
