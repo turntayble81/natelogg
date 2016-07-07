@@ -39,7 +39,9 @@ io.on('connection', function(socket) {
         if(formatter) {
             data = formatter.handleLogLine(data);
         }
-        socket.emit('logData', data);
+        if(data) {
+            socket.emit('logData', data);
+        }
     };
 
     socket._errHandler = function(err) {

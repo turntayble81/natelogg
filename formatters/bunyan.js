@@ -128,6 +128,8 @@ Bunyan.prototype.handleLogLine = function(line) {
     }else if (line[0] !== '{') {
         if(!opts.strict) {
             return line;  // not JSON
+        }else {
+            return;
         }
     }else {
         try {
