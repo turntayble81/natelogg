@@ -1,5 +1,6 @@
 var formatters = {
-    Bunyan: require('./bunyan')
+    bunyan : require('./bunyan'),
+    none   : require('./none')
 };
 
 module.exports = formatters;

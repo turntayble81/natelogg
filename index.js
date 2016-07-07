@@ -8,10 +8,6 @@ var formatters      = require('./formatters');
 var app             = express();
 var watchers        = {};
 
-var bunyan = new formatters.Bunyan({
-    colorMode: 'HTML'
-});
-
 app.set('view engine', 'ejs');
 app.use(morgan('dev'));
 app.use('/static', express.static('./static'));
@@ -34,17 +30,30 @@ var server = app.listen(config.port, function () {
 var io = socketio(server);
 
 io.on('connection', function(socket) {
+    var formatter;
+
     console.log('Client websocket connected.');
 
     console.log('Creating log event handlers');
     socket._lineHandler = function(data) {
-        data = bunyan.handleLogLine(data);
+        if(formatter) {
+            data = formatter.handleLogLine(data);
+        }
         socket.emit('logData', data);
     };
 
     socket._errHandler = function(err) {
         socket.emit('logData', data);
     };
+
+    socket.on('setFormatter', function(data) {
+        formatter = new formatters[data.formatter]({});
+    });
+
+    socket.on('setFormatterOptions', function(data) {
+        var options = eval('(' + data.options + ')');
+        formatter = new formatters[data.formatter](options);
+    });
 
     socket.on('toggleLog', function(data) {
         var watcher;

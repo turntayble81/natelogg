@@ -30,6 +30,13 @@ window.onload = function() {
         shell.html('');
     });
 
+    $('input[name=formatter]').change(function() {
+        var formatter = $(this).val();
+        socket.emit('setFormatter', {
+            formatter: formatter
+        });
+    });
+
     $('#bunyan-options').click(function() {
         var win = $('#bunyan-options-window');
         if(win.dialog('isOpen')) {
@@ -43,17 +50,22 @@ window.onload = function() {
         autoOpen: false,
         dialogClass: 'noTitleStuff',
         position: { my: "left top", at: "left bottom", of: '#bunyan-options' },
-        height: 250,
+        height: 260,
         width: 300,
         buttons: [{
             text: 'Save',
             click: function() {
-                $( this ).dialog( "close" );
+                var val = $(this).find('textarea').val();
+                socket.emit('setFormatterOptions', {
+                    formatter : 'bunyan',
+                    options   : val
+                });
+                $(this).dialog( "close" );
             }
         }, {
             text: 'Cancel',
             click: function() {
-                $( this ).dialog( "close" );
+                $(this).dialog( "close" );
             }
         }]
     }).dialog("widget").find(".ui-dialog-titlebar").hide();

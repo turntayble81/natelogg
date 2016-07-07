@@ -50,7 +50,7 @@ function Bunyan(opts) {
     this.opts.args       = this.opts.args       || [];
     this.opts.help       = this.opts.help       || false;
     this.opts.color      = this.opts.color      || true;
-    this.opts.colorMode  = this.opts.colorMode  || 'ANSI';  //ANSI by default or HTML
+    this.opts.colorMode  = this.opts.colorMode  || 'HTML';  //HTML by default or ANSI
     this.opts.paginate   = this.opts.paginate   || null;
     this.opts.outputMode = this.OM_FROM_NAME[this.opts.outputMode] || this.OM_LONG;
     this.opts.jsonIndent = this.opts.jsonIndent || 2;
@@ -175,8 +175,9 @@ Bunyan.prototype.filterRecord = function(rec) {
     }
 
     if(opts.conditions) {
+        var recCopy = this.objCopy(rec);
         for(var i = 0; i < opts.conditions.length; i++) {
-            var pass = opts.conditions[i].runInNewContext(rec);
+            var pass = opts.conditions[i].call(recCopy);
             if(!pass) {
                 return false;
             }
@@ -559,4 +560,17 @@ Bunyan.prototype.stylize = function(str, color) {
     }
 };
 
+Bunyan.prototype.objCopy = function(obj) {
+    if (obj === null) {
+        return null;
+    } else if (Array.isArray(obj)) {
+        return obj.slice();
+    } else {
+        var copy = {};
+        Object.keys(obj).forEach(function (k) {
+            copy[k] = obj[k];
+        });
+        return copy;
+    }
+};
 module.exports = Bunyan;
