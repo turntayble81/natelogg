@@ -40,6 +40,11 @@ function Bunyan(opts) {
         'bunyan'  : this.OM_BUNYAN
     };
 
+    this.TIME_FROM_NAME = {
+        'UTC'   : this.TIME_UTC,
+        'local' : this.TIME_LOCAL
+    };
+
     this.opts = opts || {};
 
     this.opts.args       = this.opts.args       || [];
@@ -53,7 +58,7 @@ function Bunyan(opts) {
     this.opts.strict     = this.opts.strict     || false;
     this.opts.pids       = this.opts.pids       || null;
     this.opts.pidsType   = this.opts.pidsType   || null;
-    this.opts.timeFormat = this.opts.timeFormat || this.TIME_UTC;
+    this.opts.timeFormat = this.TIME_FROM_NAME[this.opts.timeFormat] || this.TIME_UTC;
 
     // http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
     this.ANSIColors = {

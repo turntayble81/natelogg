@@ -14,6 +14,7 @@ var bunyan = new formatters.Bunyan({
 
 app.set('view engine', 'ejs');
 app.use(morgan('dev'));
+app.use('/static', express.static('./static'));
 
 app.get('/', function (req, res) {
     fs.readdir(config.logDirectory, function(err, logs) {

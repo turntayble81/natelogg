@@ -2,134 +2,12 @@
 <html>
     <head>
         <title>NateLogg</title>
-        <style>
-            html, body {
-                height: 100%;
-                width: 100%;
-                margin: 0;
-            }
-            pre {
-                margin: 2px 0;
-                white-space: pre-wrap;
-                word-wrap: break-word;
-            }
-
-            label {
-                color: #03168c;
-                cursor: pointer;
-            }
-
-            select {
-                width: 100%;
-            }
-
-            input[type="button"] {
-                width: 100%;
-            }
-
-            #main {
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
-            }
-
-            #left-panel {
-                float: left;
-                width: 200px;
-                height: 100%;
-                background-color: #000;
-                border-right: #838181 4px solid;
-                font-family: monospace;
-                font-size: 10px;
-                color: #fff;
-            }
-
-            .left-panel-header {
-                display: inline-block;
-                height: 32px;
-                width: 100%;
-                text-align: center;
-                line-height: 32px;
-                font-size: 12px;
-                font-weight: bold;
-                background-color: #222;
-            }
-
-            .panel-section-body {
-                padding: 5px;
-            }
-
-            #right-panel {
-                width: auto;
-                height: 100%;
-                overflow: hidden;
-            }
-
-            #shell {
-                width: 100%;
-                height: 100%;
-                font-size: 12px;
-                background-color: black;
-                color: white;
-                overflow-y: auto;
-            }
-        </style>
+        <link rel="stylesheet" href="/static/jquery-ui-1.11.4.custom/jquery-ui.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/style/main.css">
+        <script src="/static/jquery-ui-1.11.4.custom/external/jquery/jquery.js"></script>
+        <script src="/static/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
-        <script>
-            var socket          = io();
-            var historyLength   = 0;
-            var maxHistoryLines = 1000;
-            var shell;
-
-            window.onload = function() {
-                shell = document.getElementById('shell');
-                document.getElementById('font-size').onchange = function() {
-                    shell.style.fontSize = this.value + 'px';
-                };
-                document.getElementById('max-history-lines').onchange = function() {
-                    var val = parseInt(this.value);
-                    if(val === 0) {
-                        maxHistoryLines = Infinity;
-                    }else {
-                        maxHistoryLines = val;
-                    }
-                };
-                document.getElementById('clear-history').onclick = function() {
-                    shell.innerHTML = '';
-                };
-            };
-
-            function toggleLog(el, log) {
-                var checked = el.checked;
-                socket.emit('toggleLog', {
-                    log     : log,
-                    enabled : checked
-                });
-            }
-
-            socket.on('logData', function(data) {
-                var scrollAtBottom = (shell.scrollHeight == (shell.offsetHeight + shell.scrollTop)) ? true : false;
-                var pre = document.createElement('pre');
-                var lines = shell.getElementsByTagName('pre');
-                var removeLength;
-                var n;
-
-                if(historyLength >= maxHistoryLines) {
-                    removeLength = historyLength - maxHistoryLines;
-                    for(n=0; n<=removeLength; n++) {
-                        shell.removeChild(shell.children[0]);
-                        historyLength--;
-                    }
-                }
-                pre.innerHTML=data;
-                shell.appendChild(pre);
-                historyLength++;
-
-                if(scrollAtBottom) {
-                    shell.scrollTop = shell.scrollHeight;
-                }
-            });
-        </script>
+        <script src="/static/scripts/main.js"></script>
     </head>
     <body>
         <div id="main">
@@ -138,10 +16,10 @@
                     Logs
                 </span>
                 <div class="panel-section-body">
-                    <table>
+                    <table id="logs">
                     <% for(var i=0; i<logs.length; i++) { %>
                         <tr>
-                            <td><input type="checkbox" onclick="toggleLog(this, '<%= logs[i] %>')" /></td>
+                            <td><input type="checkbox" value="<%= logs[i] %>" /></td>
                             <td><%= logs[i] %></td>
                         </tr>
                     <% } %>
@@ -153,9 +31,14 @@
                 <div class="panel-section-body">
                     <table>
                         <tr>
-                            <td><input type="checkbox" /></td>
+                            <td><input type="radio" name="formatter" value="none" checked="checked" /></td>
+                            <td>None</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="formatter" value="bunyan" /></td>
                             <td>Bunyan</td>
-                            <td><label>(options)</label></td>
+                            <td><label id="bunyan-options">(options)</label></td>
                         </tr>
                     </table>
                 </div>
@@ -180,7 +63,6 @@
                             <td>History Max Lines:</td>
                             <td>
                                 <select id="max-history-lines">
-                                    <option value="0">&infin;</option>
                                     <option value="100">100</option>
                                     <option value="1000" selected>1,000</option>
                                     <option value="10000">10,000</option>
@@ -198,6 +80,22 @@
             <div id="right-panel">
                 <div id="shell"></div>
             </div>
+        </div>
+        <div id="bunyan-options-window" style="display: none;">
+<textarea spellcheck="false">
+{
+    color      : true,
+    colorMode  : 'HTML',
+    paginate   : null,
+    outputMode : 'long',
+    jsonIndent : 2,
+    level      : null,
+    strict     : false,
+    pids       : null,
+    pidsType   : null,
+    timeFormat : 'UTC'
+}
+</textarea>
         </div>
     </body>
 </html>
