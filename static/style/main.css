@@ -44,6 +44,11 @@ input[type="button"] {
     font-size: 12px;
 }
 
+#bunyan-options-window {
+    padding: 5px;
+    overflow: hidden;
+}
+
 #bunyan-options-window textarea {
     font-family: monospace;
     margin: 0;
