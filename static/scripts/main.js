@@ -8,9 +8,6 @@ $(document).ready(function() {
     shell = $('#shell');
 
     $('#font-size').change(function() {
-        if(!this.value) {
-            return;
-        }
         storage.setItem('fontSize', this.value);
         shell.css('font-size', this.value + 'px');
     });
@@ -25,15 +22,7 @@ $(document).ready(function() {
         var el         = $(this);
         var checked    = el.prop('checked');
         var log        = el.attr('value');
-        var checkedArr = [];
 
-        $('#logs input:checkbox').each(function(idx, el) {
-            el = $(el);
-            if(el.prop('checked')) {
-                checkedArr.push(el.attr('value'));
-            }
-        });
-        storage.setItem('logs', checkedArr);
         socket.emit('toggleLog', {
             log     : log,
             enabled : checked
@@ -87,8 +76,19 @@ $(document).ready(function() {
         }]
     }).dialog("widget").find(".ui-dialog-titlebar").hide();
 
-    $('#font-size').val(storage.getItem('fontSize')).change();
+    if(storage.getItem('fontSize')) {
+        $('#font-size').val(storage.getItem('fontSize')).change();
+    }
+
+    if(storage.getItem('maxHistoryLines')) {
+        $('#max-history-lines').val(storage.getItem('maxHistoryLines')).change();
+    }
+
+    if(storage.getItem('formatter')) {
+        $('input[name=formatter][value=' + storage.getItem('formatter') + ']').prop('checked', true).change();
+    }
 });
+
 
 socket.on('logData', function(data) {
     var el = shell.get(0);
