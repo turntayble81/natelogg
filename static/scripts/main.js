@@ -3,7 +3,7 @@ var historyLength   = 0;
 var maxHistoryLines = 1000;
 var shell;
 
-window.onload = function() {
+$(document).ready(function() {
     shell = $('#shell');
 
     $('#font-size').change(function() {
@@ -70,7 +70,7 @@ window.onload = function() {
             }
         }]
     }).dialog("widget").find(".ui-dialog-titlebar").hide();
-};
+});
 
 socket.on('logData', function(data) {
     var el = shell.get(0);
