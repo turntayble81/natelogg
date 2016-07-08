@@ -141,6 +141,10 @@ Bunyan.prototype.handleLogLine = function(line) {
         }
     }
 
+    if(!rec) {
+        return;
+    }
+
     if(!this.isValidRecord(rec)) {
         if(!opts.strict) {
             return line;
