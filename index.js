@@ -3,10 +3,13 @@ var socketio        = require('socket.io');
 var morgan          = require('morgan');
 var fs              = require('fs');
 var Tail            = require('tail').Tail;
-var config          = require('./config');
 var formatters      = require('./formatters');
 var app             = express();
 var watchers        = {};
+
+var homeDir         = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+var config          = require(homeDir + '/.natelogg/config');
+var port            = config.port || 9000;
 
 app.set('view engine', 'ejs');
 app.use(morgan('dev'));
@@ -24,8 +27,8 @@ app.get('/', function (req, res) {
     });
 });
 
-var server = app.listen(config.port, function () {
-    console.log('Natelogg started on port %s', config.port);
+var server = app.listen(port, function () {
+    console.log('Natelogg started on port %s', port);
 });
 var io = socketio(server);
 
