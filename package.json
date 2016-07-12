@@ -8,6 +8,9 @@
     "email": "haig.papaghanian@gmail.com",
     "url": "https://github.com/ichernev"
   },
+  "bin" : {
+    "natelogg-server": "./index.js",
+  },
   "keywords": [
     "tail",
     "log",
