@@ -5,7 +5,7 @@ var socketio        = require('socket.io');
 var morgan          = require('morgan');
 var fs              = require('fs');
 var Tail            = require('tail').Tail;
-var formatters      = require('./formatters');
+var formatters      = require(__dirname + '/formatters');
 var app             = express();
 var watchers        = {};
 
@@ -22,8 +22,9 @@ try {
 var port            = config.port || 9000;
 
 app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
 app.use(morgan('dev'));
-app.use('/static', express.static('./static'));
+app.use('/static', express.static(__dirname + '/static'));
 
 app.get('/', function (req, res) {
     fs.readdir(config.logDirectory, function(err, logs) {
