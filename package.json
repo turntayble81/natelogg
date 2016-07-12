@@ -9,7 +9,7 @@
     "url": "https://github.com/ichernev"
   },
   "bin" : {
-    "natelogg-server": "./index.js",
+    "natelogg-server": "./index.js"
   },
   "keywords": [
     "tail",
