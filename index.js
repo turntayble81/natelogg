@@ -8,7 +8,15 @@ var app             = express();
 var watchers        = {};
 
 var homeDir         = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
-var config          = require(homeDir + '/.natelogg/config');
+var config;
+
+try {
+    config          = require(homeDir + '/.natelogg/config');
+}catch(e) {
+    console.error('Could not load config file. Make sure you have a config file at ~/.natelogg/config');
+    process.exit();
+}
+
 var port            = config.port || 9000;
 
 app.set('view engine', 'ejs');
