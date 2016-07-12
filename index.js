@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var express         = require('express');
 var socketio        = require('socket.io');
 var morgan          = require('morgan');
