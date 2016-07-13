@@ -7,6 +7,11 @@ var shell;
 $(document).ready(function() {
     shell = $('#shell');
 
+    $('#logs input:checkbox').each(function(idx, el) {
+        el = $(el);
+        el.prop('checked', false);
+    });
+
     $('#font-size').change(function() {
         storage.setItem('fontSize', this.value);
         shell.css('font-size', this.value + 'px');
