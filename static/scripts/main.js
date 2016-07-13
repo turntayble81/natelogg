@@ -12,6 +12,10 @@ $(document).ready(function() {
         el.prop('checked', false);
     });
 
+    $(window).on('beforeunload', function() {
+        return 'Stop logging and exit?';
+    });
+
     $('#font-size').change(function() {
         storage.setItem('fontSize', this.value);
         shell.css('font-size', this.value + 'px');
