@@ -3,6 +3,7 @@ var historyLength   = 0;
 var maxHistoryLines = 1000;
 var storage         = {};
 var shell;
+var scrollBuffer = [];
 
 $(document).ready(function() {
     shell = $('#shell');
@@ -132,14 +133,27 @@ socket.on('logData', function(data) {
             historyLength--;
         }
     }
-    pre.innerHTML=data;
-    el.appendChild(pre);
-    historyLength++;
-
+    
     if(scrollAtBottom) {
+        processBuffer(el)
+        pre.innerHTML=data;
+        el.appendChild(pre);
+        historyLength++;
         el.scrollTop = el.scrollHeight;
+    } else {
+        scrollBuffer.push(data);
     }
 });
+
+function processBuffer(el) {
+    scrollBuffer.forEach(function(item) {
+        var pre = document.createElement('pre');
+        pre.innerHTML = item;
+        el.appendChild(pre);
+    });
+    
+    scrollBuffer = [];
+}
 
 if(typeof(Storage) !== "undefined") {
     storage.setItem    = function(key, val) {
