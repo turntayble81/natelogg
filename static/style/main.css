@@ -38,6 +38,7 @@ input[type="button"] {
     font-family: monospace;
     font-size: 10px;
     color: #fff;
+    overflow-y: auto;
 }
 
 .ui-widget {
@@ -86,4 +87,8 @@ input[type="button"] {
     background-color: black;
     color: white;
     overflow-y: auto;
+}
+
+#logs tr {
+    cursor: pointer;
 }

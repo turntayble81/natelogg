@@ -3,6 +3,7 @@ var historyLength   = 0;
 var maxHistoryLines = 1000;
 var storage         = {};
 var shell;
+var scrollBuffer = [];
 
 $(document).ready(function() {
     shell = $('#shell');
@@ -13,8 +14,22 @@ $(document).ready(function() {
     });
 
     $(window).on('beforeunload', function() {
+        //save selected to logs to local storage
+        storage.setItem('logSelection', getLogSelection());
         return 'Stop logging and exit?';
     });
+    
+    function getLogSelection() {
+        var checkedLogs = {};
+        
+        $('#logs input:checkbox').each(function(i, checkbox) {
+            if (checkbox.checked) {
+                checkedLogs[checkbox.value] = true;                                
+            }
+        });
+        
+        return checkedLogs;
+    }    
 
     $('#font-size').change(function() {
         storage.setItem('fontSize', this.value);
@@ -27,15 +42,18 @@ $(document).ready(function() {
         maxHistoryLines = val;
     });
 
-    $('#logs input:checkbox').click(function() {
+    $('#logs input:checkbox, #logs .log-label').click(function() {
         var el         = $(this);
+        
+        if (!el.is('input:checkbox')) {
+            el = el.prev().find('input:checkbox');
+            el.prop('checked', !el.prop('checked'));
+        }
+        
         var checked    = el.prop('checked');
         var log        = el.attr('value');
-
-        socket.emit('toggleLog', {
-            log     : log,
-            enabled : checked
-        });        
+        
+        toggleLog(log, checked);               
     });
 
     $('#clear-history').click(function() {
@@ -96,10 +114,14 @@ $(document).ready(function() {
     if(storage.getItem('formatter')) {
         $('input[name=formatter][value=' + storage.getItem('formatter') + ']').prop('checked', true).change();
     }
+    
+    applyPreviousLogSelection();
 });
 
 
-socket.on('logData', function(data) {
+socket.on('logData', lineProcessor);
+
+function lineProcessor(data, isRecursive) {
     var el = shell.get(0);
     var scrollAtBottom = (el.scrollHeight == (el.offsetHeight + el.scrollTop)) ? true : false;
     var pre = document.createElement('pre');
@@ -113,14 +135,35 @@ socket.on('logData', function(data) {
             historyLength--;
         }
     }
-    pre.innerHTML=data;
-    el.appendChild(pre);
-    historyLength++;
-
+    
     if(scrollAtBottom) {
+        if(!isRecursive) {
+            processBuffer(el)
+        }
+        pre.innerHTML=data;
+        el.appendChild(pre);
+        historyLength++;
         el.scrollTop = el.scrollHeight;
+    } else {
+        scrollBuffer.push(data);
     }
-});
+}
+
+function processBuffer(el) {
+    if(!scrollBuffer.length) {
+        return;
+    }
+
+    if(scrollBuffer.length > maxHistoryLines) {
+        scrollBuffer = scrollBuffer.slice(scrollBuffer.length - maxHistoryLines);
+    }
+
+    scrollBuffer.forEach(function(data) {
+        lineProcessor(data, true);
+    });
+    
+    scrollBuffer = [];
+}
 
 if(typeof(Storage) !== "undefined") {
     storage.setItem    = function(key, val) {
@@ -128,14 +171,20 @@ if(typeof(Storage) !== "undefined") {
             val = JSON.stringify(val);
         }
         localStorage.setItem(key, val);
-    }
-    storage.getItem    = function(key, val) {
-        var val = localStorage.getItem(key, val);
-        if(typeof(val) == 'object') {
-            val = JSON.parse(val);
-        }
-        return val
     };
+
+    storage.getItem    = function(key, defaultVal) {
+        var val = localStorage.getItem(key);
+        if (val) {
+            try {
+                return JSON.parse(val);
+            } catch(err) {
+                return val;
+            }
+        }
+        return defaultVal;
+    };
+
     storage.removeItem = function(key) {
         localStorage.removeItem(key);
     };
@@ -143,4 +192,22 @@ if(typeof(Storage) !== "undefined") {
     storage.setItem    = function() {};
     storage.getItem    = function() {};
     storage.removeItem = function() {};
+}
+
+function applyPreviousLogSelection() {
+    var logSelection = storage.getItem('logSelection', {});
+    
+    Object.keys(logSelection).forEach(function(key) {
+       $('#logs input:checkbox[value="' + key + '"]').prop('checked', true);
+       toggleLog(key, true);
+    });
+    
+    storage.removeItem('logSelection');
+}
+
+function toggleLog(log, checked) {
+    socket.emit('toggleLog', {
+        log     : log,
+        enabled : checked
+    }); 
 }

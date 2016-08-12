@@ -4,6 +4,7 @@
         <title>NateLogg</title>
         <link rel="stylesheet" href="/static/jquery-ui-1.11.4.custom/jquery-ui.min.css">
         <link rel="stylesheet" type="text/css" href="/static/style/main.css">
+        <link rel="shortcut icon" type="image/png" href="/static/images/favicon.ico"/>
         <script src="/static/jquery-ui-1.11.4.custom/external/jquery/jquery.js"></script>
         <script src="/static/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
@@ -20,7 +21,7 @@
                     <% for(var i=0; i<logs.length; i++) { %>
                         <tr>
                             <td><input type="checkbox" value="<%= logs[i] %>" /></td>
-                            <td><%= logs[i] %></td>
+                            <td class="log-label"><%= logs[i] %></td>
                         </tr>
                     <% } %>
                     </table>
