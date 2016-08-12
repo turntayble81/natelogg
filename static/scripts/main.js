@@ -119,7 +119,9 @@ $(document).ready(function() {
 });
 
 
-socket.on('logData', function(data) {
+socket.on('logData', lineProcessor);
+
+function lineProcessor(data, isRecursive) {
     var el = shell.get(0);
     var scrollAtBottom = (el.scrollHeight == (el.offsetHeight + el.scrollTop)) ? true : false;
     var pre = document.createElement('pre');
@@ -135,7 +137,9 @@ socket.on('logData', function(data) {
     }
     
     if(scrollAtBottom) {
-        processBuffer(el)
+        if(!isRecursive) {
+            processBuffer(el)
+        }
         pre.innerHTML=data;
         el.appendChild(pre);
         historyLength++;
@@ -143,13 +147,19 @@ socket.on('logData', function(data) {
     } else {
         scrollBuffer.push(data);
     }
-});
+}
 
 function processBuffer(el) {
-    scrollBuffer.forEach(function(item) {
-        var pre = document.createElement('pre');
-        pre.innerHTML = item;
-        el.appendChild(pre);
+    if(!scrollBuffer.length) {
+        return;
+    }
+
+    if(scrollBuffer.length > maxHistoryLines) {
+        scrollBuffer = scrollBuffer.slice(scrollBuffer.length - maxHistoryLines);
+    }
+
+    scrollBuffer.forEach(function(data) {
+        lineProcessor(data, true);
     });
     
     scrollBuffer = [];
@@ -161,17 +171,20 @@ if(typeof(Storage) !== "undefined") {
             val = JSON.stringify(val);
         }
         localStorage.setItem(key, val);
-    }
-    storage.getItem    = function(key, val) {
-        var val = localStorage.getItem(key, val);
+    };
+
+    storage.getItem    = function(key, defaultVal) {
+        var val = localStorage.getItem(key);
         if (val) {
             try {
-                return JSON.parse(val)
+                return JSON.parse(val);
             } catch(err) {
-                return val
+                return val;
             }
-        }     
+        }
+        return defaultVal;
     };
+
     storage.removeItem = function(key) {
         localStorage.removeItem(key);
     };
@@ -182,7 +195,7 @@ if(typeof(Storage) !== "undefined") {
 }
 
 function applyPreviousLogSelection() {
-    var logSelection = storage.getItem('logSelection');
+    var logSelection = storage.getItem('logSelection', {});
     
     Object.keys(logSelection).forEach(function(key) {
        $('#logs input:checkbox[value="' + key + '"]').prop('checked', true);

@@ -88,3 +88,7 @@ input[type="button"] {
     color: white;
     overflow-y: auto;
 }
+
+#logs tr {
+    cursor: pointer;
+}
