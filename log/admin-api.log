@@ -1,0 +1,65 @@
+2016-08-12T05:27:44.504Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T05:27:44.583Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+[2016-08-12T05:29:06.777Z]  INFO: BACKEND-SERVICES/1365 on bc68a2ceead9: ReviewItems::flush [Flushing review items]
+[2016-08-12T05:29:07.600Z]  INFO: CORE-API/1343 on bc68a2ceead9: ReviewItems::flush [Flushing review items]
+2016-08-12T05:29:11.639Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T05:29:11.939Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+[2016-08-12T05:30:39.644Z]  INFO: BACKEND-SERVICES/1365 on bc68a2ceead9: Ran Garbage Collector. (metric=backend-services:rss, RSS=132, elapsedTime=172, MemFreed=0)
+[2016-08-12T05:30:40.504Z]  INFO: CORE-API/1343 on bc68a2ceead9: Ran Garbage Collector. (metric=core-api:rss, RSS=91, elapsedTime=113, MemFreed=0)
+2016-08-12T05:30:44.239Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T05:30:45.301Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+[2016-08-12T05:33:39.810Z]  INFO: BACKEND-SERVICES/1365 on bc68a2ceead9: Ran Garbage Collector. (metric=backend-services:rss, RSS=131, elapsedTime=162, MemFreed=0.89)
+[2016-08-12T05:33:40.686Z]  INFO: CORE-API/1343 on bc68a2ceead9: Ran Garbage Collector. (metric=core-api:rss, RSS=91, elapsedTime=127, MemFreed=0)
+new line
+new line
+new line
+new line
+new line
+new line
+new line
+new line
+new line
+new line
+new line
+new line
+new line
+new line
+new line
+new line
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
+2016-08-12T06:06:46.435Z ***PUTTING LOG EVENTS*** Event Count: 1 Queue Depth: 0 retryCount: 0
