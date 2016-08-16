@@ -3,7 +3,8 @@
 i=0;
 
 while [ true ]; do
-    echo '{"name":"API","hostname":"c9804837f0b1","pid":3572,"level":30,"count":'$i',"metric":"rss","RSS":105,"elapsedTime":180,"MemFreed":-0.03,"msg":"Ran Garbage Collector.","time":"2016-08-12T17:54:42.231Z","v":0}' >> /log/foo.log
+	now=$(date)
+    echo '{"name":"API","hostname":"c9804837f0b1","pid":3572,"level":30,"count":'$i',"metric":"rss","RSS":105,"elapsedTime":180,"MemFreed":-0.03,"msg":"Ran Garbage Collector.","time":"'$now'","v":0}' >> /log/foo.log
     i=$((i+1));
-    sleep 1;
+    sleep .1;
 done
