@@ -1,6 +1,6 @@
 {
   "name": "natelogg",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Log monitoring in realtime through your browser. Built-in support for color Bunyan logging and filtering.",
   "homepage": "",
   "author": {
