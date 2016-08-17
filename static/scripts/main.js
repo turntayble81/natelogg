@@ -123,7 +123,7 @@ socket.on('logData', lineProcessor);
 
 function lineProcessor(data, isRecursive) {
     var el = shell.get(0);
-    var scrollAtBottom = (el.scrollHeight >= (el.offsetHeight + Math.ceil(el.scrollTop))) ? true : false;
+    var scrollAtBottom = (el.scrollHeight <= (el.offsetHeight + Math.ceil(el.scrollTop + 5))) ? true : false;
     var pre = document.createElement('pre');
     var removeLength;
     var n;
