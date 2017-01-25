@@ -38,6 +38,10 @@ app.get('/', function (req, res) {
     });
 });
 
+app.get('/newtab', function (req, res) {
+    res.location('/' + req.query.url);
+});
+
 var server = app.listen(port, function () {
     console.log('Natelogg started on port %s', port);
 });

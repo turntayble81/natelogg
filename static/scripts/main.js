@@ -128,24 +128,28 @@ function lineProcessor(data, isRecursive) {
     var removeLength;
     var n;
 
-    if(historyLength >= maxHistoryLines) {
-        removeLength = historyLength - maxHistoryLines;
-        for(n=0; n<=removeLength; n++) {
-            el.removeChild(el.children[0]);
-            historyLength--;
-        }
-    }
-    
-    if(scrollAtBottom) {
-        if(!isRecursive) {
-            processBuffer(el)
-        }
-        pre.innerHTML=data;
-        el.appendChild(pre);
-        historyLength++;
-        el.scrollTop = el.scrollHeight;
+    if (data.indexOf('chrome-devtools') !== -1) {
+        $('#logs a.linkless').attr('href', 'newtab?url=' + data);
     } else {
-        scrollBuffer.push(data);
+        if(historyLength >= maxHistoryLines) {
+            removeLength = historyLength - maxHistoryLines;
+            for(n=0; n<=removeLength; n++) {
+                el.removeChild(el.children[0]);
+                historyLength--;
+            }
+        }
+
+        if(scrollAtBottom) {
+            if(!isRecursive) {
+                processBuffer(el)
+            }
+            pre.innerHTML=data;
+            el.appendChild(pre);
+            historyLength++;
+            el.scrollTop = el.scrollHeight;
+        } else {
+            scrollBuffer.push(data);
+        }
     }
 }
 
