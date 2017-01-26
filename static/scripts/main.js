@@ -137,7 +137,7 @@ function lineProcessor(data, isRecursive) {
         //update debug links
         var port = data.split(':')[2].split('/')[0];
         $('#logs tr').each(function(i) {
-            if ($(this).add('td').eq(3).html() === portAppMap[port]) {
+            if ($(this).find('td').eq(2).html() === portAppMap[port]) {
                 $(this).find('a.linkless').attr('href', 'newtab?url=' + data);
             }
         });
