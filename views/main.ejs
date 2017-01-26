@@ -10,6 +10,9 @@
         <script src="/static/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/static/scripts/main.js"></script>
+        <script>
+            var options = <%- JSON.stringify(options) %>;
+        </script>
     </head>
     <body>
         <div id="main">
@@ -21,11 +24,13 @@
                     <table id="logs">
                     <% for(var i=0; i<logs.length; i++) { %>
                         <tr>
-                            <td>
-                                <a class="linkless" target="_blank" href="newtab?url=chrome-devtools://devtools/remote/serve_file/@60cd6e859b9f557d2312f5bf532f6aec5f284980/inspector.html?experiments=true&v8only=true&ws=127.0.0.1:9229/9adeb676-6d48-4322-9121-893044142325">
-                                    <i class="fa fa-bug fa-lg"></i>
-                                </a>
-                            </td>
+                            <% if (options.debug) { %>
+                                <td>
+                                    <a class="linkless" target="_blank" href="">
+                                        <i class="fa fa-bug fa-lg"></i>
+                                    </a>
+                                </td>
+                            <% } %>
                             <td><input type="checkbox" value="<%= logs[i] %>" /></td>
                             <td class="log-label"><%= logs[i] %></td>
                         </tr>

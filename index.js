@@ -4,13 +4,18 @@ var express         = require('express');
 var socketio        = require('socket.io');
 var morgan          = require('morgan');
 var fs              = require('fs');
+var minimist        = require('minimist');
 var Tail            = require('tail').Tail;
 var formatters      = require(__dirname + '/formatters');
 var app             = express();
 var watchers        = {};
+var options         = minimist(process.argv.slice(2));
+console.dir(options);
 
 var homeDir         = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
 var config;
+
+
 
 try {
     config          = require(homeDir + '/.natelogg/config');
@@ -33,7 +38,8 @@ app.get('/', function (req, res) {
         }
 
         res.render('main', {
-            logs: logs
+            logs: logs,
+            options: options
         });
     });
 });

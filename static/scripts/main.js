@@ -4,6 +4,11 @@ var maxHistoryLines = 1000;
 var storage         = {};
 var shell;
 var scrollBuffer = [];
+var portAppMap = {
+    9229: 'core-api.log',
+    9230: 'backend-services.log',
+    9231: 'admin-api.log'
+};
 
 $(document).ready(function() {
     shell = $('#shell');
@@ -128,8 +133,14 @@ function lineProcessor(data, isRecursive) {
     var removeLength;
     var n;
 
-    if (data.indexOf('chrome-devtools') !== -1) {
-        $('#logs a.linkless').attr('href', 'newtab?url=' + data);
+    if (options.debug && data.indexOf('chrome-devtools') !== -1) {
+        //update debug links
+        var port = data.split(':')[2].split('/')[0];
+        $('#logs tr').each(function(i) {
+            if ($(this).add('td').eq(3).html() === portAppMap[port]) {
+                $(this).find('a.linkless').attr('href', 'newtab?url=' + data);
+            }
+        });
     } else {
         if(historyLength >= maxHistoryLines) {
             removeLength = historyLength - maxHistoryLines;
