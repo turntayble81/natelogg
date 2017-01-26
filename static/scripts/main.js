@@ -18,6 +18,12 @@ $(document).ready(function() {
         el.prop('checked', false);
     });
 
+    $('a').on('click', function(e) {
+        if ($(this).attr('href') === "") {
+            e.preventDefault()
+        }
+    });
+
     $(window).on('beforeunload', function() {
         //save selected to logs to local storage
         storage.setItem('logSelection', getLogSelection());
@@ -138,7 +144,9 @@ function lineProcessor(data, isRecursive) {
         var port = data.split(':')[2].split('/')[0];
         $('#logs tr').each(function(i) {
             if ($(this).find('td').eq(2).html() === portAppMap[port]) {
-                $(this).find('a.linkless').attr('href', 'newtab?url=' + data);
+                var $anchor = $(this).find('a.linkless');
+                $anchor.attr('href', 'newtab?url=' + data);
+                $anchor.removeClass('disabled');
             }
         });
     } else {

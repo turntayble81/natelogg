@@ -96,3 +96,8 @@ input[type="button"] {
 .linkless {
     color: inherit;
 }
+
+.disabled {
+    color: gray;
+    cursor: default;
+}

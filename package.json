@@ -28,7 +28,7 @@
     "url": "https://github.com/haigo/natelogg/issues"
   },
   "scripts": {
-    "start": "node --inspect index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "MIT",

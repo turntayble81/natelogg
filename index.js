@@ -10,7 +10,6 @@ var formatters      = require(__dirname + '/formatters');
 var app             = express();
 var watchers        = {};
 var options         = minimist(process.argv.slice(2));
-console.dir(options);
 
 var homeDir         = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
 var config;
