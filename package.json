@@ -10,7 +10,7 @@
   },
   "bin": {
     "natelogg-server": "./index.js",
-    "natelogg-inspect": './index.js --enableInspector'
+    "natelogg-inspect": "./index.js --enableInspector"
   },
   "keywords": [
     "tail",
