@@ -145,7 +145,7 @@ function lineProcessor(data, isRecursive) {
         $('#logs tr').each(function(i) {
             if ($(this).find('td').eq(2).html() === portAppMap[port]) {
                 var $anchor = $(this).find('a.linkless');
-                $anchor.attr('href', 'newtab?url=' + data);
+                $anchor.attr('href', 'newtab?url=' + data.trim());
                 $anchor.removeClass('disabled');
             }
         });
