@@ -6,8 +6,7 @@ Natelogg is a lightweight app for realtime tailing of logs to your browser. It's
 
 ### Installation
 
-- Install globally using npm: `npm install -g natelogg` To start the server, run: `natelogg-server`
-- Alternatively, clone or download the repository. Navigate to the source dir, and run `npm start` to start the server.
+- Install globally using npm: `npm install -g natelogg`
 
 ### Configuration
 
@@ -47,12 +46,6 @@ npm start
 ```
 
 #### Run log server with bindings for Node --inspect
-```
-natelogg-inspect
-```
-
-or
-
 ```
 npm run inspect
 ```
