@@ -92,3 +92,12 @@ input[type="button"] {
 #logs tr {
     cursor: pointer;
 }
+
+.linkless {
+    color: inherit;
+}
+
+.disabled {
+    color: gray;
+    cursor: default;
+}

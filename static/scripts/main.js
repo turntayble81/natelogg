@@ -4,6 +4,11 @@ var maxHistoryLines = 1000;
 var storage         = {};
 var shell;
 var scrollBuffer = [];
+var portAppMap = {
+    9229: 'core-api.log',
+    9230: 'backend-services.log',
+    9231: 'admin-api.log'
+};
 
 $(document).ready(function() {
     shell = $('#shell');
@@ -11,6 +16,12 @@ $(document).ready(function() {
     $('#logs input:checkbox').each(function(idx, el) {
         el = $(el);
         el.prop('checked', false);
+    });
+
+    $('a').on('click', function(e) {
+        if ($(this).attr('href') === "") {
+            e.preventDefault()
+        }
     });
 
     $(window).on('beforeunload', function() {
@@ -128,24 +139,36 @@ function lineProcessor(data, isRecursive) {
     var removeLength;
     var n;
 
-    if(historyLength >= maxHistoryLines) {
-        removeLength = historyLength - maxHistoryLines;
-        for(n=0; n<=removeLength; n++) {
-            el.removeChild(el.children[0]);
-            historyLength--;
-        }
-    }
-    
-    if(scrollAtBottom) {
-        if(!isRecursive) {
-            processBuffer(el)
-        }
-        pre.innerHTML=data;
-        el.appendChild(pre);
-        historyLength++;
-        el.scrollTop = el.scrollHeight;
+    if (options.debug && data.indexOf('chrome-devtools') !== -1) {
+        //update debug links
+        var port = data.split(':')[2].split('/')[0];
+        $('#logs tr').each(function(i) {
+            if ($(this).find('td').eq(2).html() === portAppMap[port]) {
+                var $anchor = $(this).find('a.linkless');
+                $anchor.attr('href', 'newtab?url=' + data.trim());
+                $anchor.removeClass('disabled');
+            }
+        });
     } else {
-        scrollBuffer.push(data);
+        if(historyLength >= maxHistoryLines) {
+            removeLength = historyLength - maxHistoryLines;
+            for(n=0; n<=removeLength; n++) {
+                el.removeChild(el.children[0]);
+                historyLength--;
+            }
+        }
+
+        if(scrollAtBottom) {
+            if(!isRecursive) {
+                processBuffer(el)
+            }
+            pre.innerHTML=data;
+            el.appendChild(pre);
+            historyLength++;
+            el.scrollTop = el.scrollHeight;
+        } else {
+            scrollBuffer.push(data);
+        }
     }
 }
 
