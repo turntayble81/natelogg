@@ -9,7 +9,8 @@
     "url": "https://github.com/ichernev"
   },
   "bin": {
-    "natelogg-server": "./index.js"
+    "natelogg-server": "./index.js",
+    "natelogg-inspect": './index.js --enableInspector'
   },
   "keywords": [
     "tail",
@@ -29,6 +30,7 @@
   },
   "scripts": {
     "start": "node index.js",
+    "inspect": "node index.js --enableInspector",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "MIT",
