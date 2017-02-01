@@ -4,13 +4,9 @@ var maxHistoryLines = 1000;
 var storage         = {};
 var shell;
 var scrollBuffer = [];
-var portAppMap = {
-    9229: 'core-api.log',
-    9230: 'backend-services.log',
-    9231: 'admin-api.log'
-};
 
 $(document).ready(function() {
+    var portAppMap = options.portAppMap;
     shell = $('#shell');
 
     $('#logs input:checkbox').each(function(idx, el) {
@@ -139,14 +135,16 @@ function lineProcessor(data, isRecursive) {
     var removeLength;
     var n;
 
-    if (options.debug && data.indexOf('chrome-devtools') !== -1) {
+    if (options.enableInspector && data.indexOf('chrome-devtools') !== -1) {
         //update debug links
         var port = data.split(':')[2].split('/')[0];
         $('#logs tr').each(function(i) {
-            if ($(this).find('td').eq(2).html() === portAppMap[port]) {
+            if ($(this).find('td').eq(2).html() === options.portAppMap[port]) {
                 var $anchor = $(this).find('a.linkless');
                 $anchor.attr('href', 'newtab?url=' + data.trim());
                 $anchor.removeClass('disabled');
+            } else {
+                console.error('Failed to bind node inspector. No matching port found. Please check your config file: ~/.natelogg/config');
             }
         });
     } else {

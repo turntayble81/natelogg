@@ -29,6 +29,7 @@
   },
   "scripts": {
     "start": "node index.js",
+    "inspect": "node index.js --enableInspector",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "MIT",

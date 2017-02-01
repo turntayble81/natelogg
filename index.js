@@ -23,7 +23,16 @@ try {
     process.exit();
 }
 
-var port            = config.port || 9000;
+if (options.enableInspector) {
+    if (typeof config.portAppMap === 'undefined') {
+        console.error('Cannot use node --inspect mode without "portAppMap" in config file.');
+        process.exit();
+    } else {
+        options.portAppMap  = config.portAppMap;
+    }
+}
+
+var port = config.port || 9000;
 
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
