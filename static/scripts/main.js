@@ -127,6 +127,9 @@ $(document).ready(function() {
 
 
 socket.on('logData', lineProcessor);
+socket.on('baseMonitor', function(data) {
+    alert(data.log.replace('.log', '') + ' has crashed');
+})
 
 function lineProcessor(data, isRecursive) {
     var el = shell.get(0);

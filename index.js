@@ -10,11 +10,8 @@ var formatters      = require(__dirname + '/formatters');
 var app             = express();
 var watchers        = {};
 var options         = minimist(process.argv.slice(2));
-
 var homeDir         = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
 var config;
-
-
 
 try {
     config          = require(homeDir + '/.natelogg/config');
@@ -22,6 +19,8 @@ try {
     console.error('Could not load config file. Make sure you have a config file at ~/.natelogg/config');
     process.exit();
 }
+
+var Tails           = require('./tails');
 
 if (options.enableInspector) {
     if (typeof config.portAppMap === 'undefined') {
@@ -139,6 +138,9 @@ io.on('connection', function(socket) {
             unsubscribe(watcher);
         });
     });
+
+    //base app monitoring - report crashes to the ui
+    var tails = new Tails(config, socket);
 
     function subscribe(watcher) {
         console.log('Subscribing to log events for %s.', watcher._log);
