@@ -11,18 +11,25 @@ class Tails {
           follow: true
         });
 
-        let lineHandler = (data) => {
+        let context = {
+          tail: tail,
+          log: log,
+          isCrashed: false
+        };
+
+        let lineHandler = (context, data) => {
           if (this.isCrashed(data)) {
             socket.emit('baseMonitor', {crash: true, log: log});
+            context.crashed = true;
+          } else if (context.crashed && !this.isCrashed(data)) {
+            socket.emit('baseMonitor', {crash: false, log: log});            
+            context.crashed = false;
           }
         };        
 
-        tail.on('line', lineHandler);        
+        tail.on('line', lineHandler.bind(this, context));        
 
-        return {
-          tail: tail,
-          log: log
-        };
+        return context;
       });   
   }
 

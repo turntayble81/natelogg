@@ -128,7 +128,17 @@ $(document).ready(function() {
 
 socket.on('logData', lineProcessor);
 socket.on('baseMonitor', function(data) {
-    alert(data.log.replace('.log', '') + ' has crashed');
+    let color;
+
+    if (data.crash) {
+        color = 'red';        
+    } else {
+        color = 'white';
+    }    
+
+    $('#logs .log-label')
+        .filter(function() {return $(this).text() === data.log})
+        .css('color', color);    
 })
 
 function lineProcessor(data, isRecursive) {
