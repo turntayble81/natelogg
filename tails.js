@@ -4,6 +4,7 @@ const fs = require('fs');
 
 class Tails {
   constructor(config, socket) {
+    this.resetCount = 0;
     this.tails = fs.readdirSync(config.logDirectory)
       .map((log) => {
         let tail = new Tail(path.join(config.logDirectory, log), {
@@ -19,18 +20,22 @@ class Tails {
 
         let lineHandler = (context, data) => {
           if (this.isCrashed(data)) {
-            socket.emit('baseMonitor', {crash: true, log: log});
+            socket.emit('baseMonitor', {crash: true, log: context.log});
             context.crashed = true;
-          } else if (context.crashed && !this.isCrashed(data)) {
-            socket.emit('baseMonitor', {crash: false, log: log});            
-            context.crashed = false;
+            this.resetCount = 0;
           }
-        };        
+          else if (context.crashed && !this.isCrashed(data) && this.resetCount > 20) {
+            socket.emit('baseMonitor', {crash: false, log: context.log});
+            context.crashed = false;
+          } else {
+              this.resetCount++;
+          }
+        };
 
-        tail.on('line', lineHandler.bind(this, context));        
+        tail.on('line', lineHandler.bind(this, context));
 
         return context;
-      });   
+      });
   }
 
   isCrashed(data) {
