@@ -7,6 +7,7 @@ var fs              = require('fs');
 var minimist        = require('minimist');
 var Tail            = require('tail').Tail;
 var formatters      = require(__dirname + '/formatters');
+var R               = require('ramda');
 var app             = express();
 var watchers        = {};
 var options         = minimist(process.argv.slice(2));
@@ -20,7 +21,8 @@ try {
     process.exit();
 }
 
-var Tails           = require('./tails');
+var BaseMonitors    = require('./baseMonitors');
+var LiveReloaders   = require('./liveReloaders');
 
 if (options.enableInspector) {
     if (typeof config.portAppMap === 'undefined') {
@@ -41,7 +43,7 @@ app.use('/static', express.static(__dirname + '/static'));
 app.get('/', function (req, res) {
     fs.readdir(config.logDirectory, function(err, logs) {
         if(err) {
-           return res.send('Can\'t read log directory ' + config.logDirectory); 
+           return res.send('Can\'t read log directory ' + config.logDirectory);
         }
 
         res.render('main', {
@@ -60,7 +62,9 @@ var server = app.listen(port, function () {
 });
 var io = socketio(server);
 
-io.on('connection', function(socket) {
+io.on('connection', onConnect);
+
+function onConnect(socket) {
     var formatter;
 
     console.log('Client websocket connected.');
@@ -130,17 +134,42 @@ io.on('connection', function(socket) {
         }
     });
 
-    socket.on('disconnect', function() {
-        console.log('Client websocket disconnected.');
-        console.log('Unsubscribing from all log events.');
-        Object.keys(watchers).forEach(function(watcher) {
-            watcher = watchers[watcher];
-            unsubscribe(watcher);
-        });
-    });
+    if (!options.enableLiveReload || socketBelongsToLogger(socket)) {
+        //base app monitoring - report crashes to the ui
+        var baseMonitors = new BaseMonitors(config, socket);
 
-    //base app monitoring - report crashes to the ui
-    var tails = new Tails(config, socket);
+        socket.on('disconnect', function() {
+            console.log('Client websocket disconnected.');
+            console.log('Unsubscribing from all log events.');
+            Object.keys(watchers).forEach(function(watcher) {
+                watcher = watchers[watcher];
+                unsubscribe(watcher);
+            });
+
+            baseMonitors.destroy();
+        });
+
+    }
+
+    if (options.enableLiveReload) {
+        //live reloaders - refreshes ui after build complete
+        var liveReloaders = new LiveReloaders(config, socket);
+
+        socket.on('disconnect', function() {
+            liveReloaders.destroy();
+        });
+    }
+
+    function socketBelongsToLogger(socket) {
+        return R.pathSatisfies(
+            (origin) => {
+                return origin.indexOf('http://log.') >= 0 ||
+                    origin.indexOf('http://localhost:9000') >= 0
+            },
+            ['handshake', 'headers', 'referer'],
+            socket
+        );
+    }
 
     function subscribe(watcher) {
         console.log('Subscribing to log events for %s.', watcher._log);
@@ -164,4 +193,4 @@ io.on('connection', function(socket) {
             delete watchers[watchers._log];
         }
     }
-});
+}
