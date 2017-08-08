@@ -6,11 +6,12 @@ const Monitor = require('./monitor');
 class LiveReloaders extends Monitor {
     constructor(config, socket) {
         super({
+            config: config,            
             emitName: 'buildComplete'
         });
 
         this.watchers = fs.readdirSync(config.logDirectory)
-            .filter((log) => (log.indexOf('ui.log') >= 0))
+            .filter((log) => (config.uiLogStreams.indexOf(log) >= 0))
             .map((log) => {
                 let tail = new Tail(path.join(config.logDirectory, log), {
                     fromBeginning: false,
@@ -42,11 +43,11 @@ class LiveReloaders extends Monitor {
     }
 
     buildComplete(data) {
-        return data.indexOf('mv dist/bundle.js generated/public') >= 0;
+        return data.toLowerCase().indexOf(this.config.uiBuildStopString.toLowerCase()) >= 0;
     }
 
     buildStarting(data) {
-        return data.indexOf('Now building webpack bundle for environment') >= 0;
+        return data.toLowerCase().indexOf(this.config.uiBuildStartString.toLowerCase()) >= 0;
     }    
 }
 

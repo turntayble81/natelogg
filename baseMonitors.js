@@ -47,7 +47,7 @@ class BaseMonitors extends Monitor {
     }
 
     isCrashed(data) {
-        return data.indexOf('Cannot find module') >= 0;
+        return data.toLowerCase().indexOf('cannot find module') >= 0;
     }
 }
 

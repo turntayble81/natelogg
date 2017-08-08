@@ -30,7 +30,7 @@
   "scripts": {
     "start": "node index.js",
     "inspect": "node index.js --enableInspector",
-    "reload": "node index.js --enableLiveReload",
+    "liveReload": "node index.js --enableLiveReload",
     "all": "node index.js --enableInspector --enableLiveReload",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
