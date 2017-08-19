@@ -25,18 +25,18 @@ $(document).ready(function() {
         storage.setItem('logSelection', getLogSelection());
         return 'Stop logging and exit?';
     });
-    
+
     function getLogSelection() {
         var checkedLogs = {};
-        
+
         $('#logs input:checkbox').each(function(i, checkbox) {
             if (checkbox.checked) {
-                checkedLogs[checkbox.value] = true;                                
+                checkedLogs[checkbox.value] = true;
             }
         });
-        
+
         return checkedLogs;
-    }    
+    }
 
     $('#font-size').change(function() {
         storage.setItem('fontSize', this.value);
@@ -51,16 +51,16 @@ $(document).ready(function() {
 
     $('#logs input:checkbox, #logs .log-label').click(function() {
         var el         = $(this);
-        
+
         if (!el.is('input:checkbox')) {
             el = el.prev().find('input:checkbox');
             el.prop('checked', !el.prop('checked'));
         }
-        
+
         var checked    = el.prop('checked');
         var log        = el.attr('value');
-        
-        toggleLog(log, checked);               
+
+        toggleLog(log, checked);
     });
 
     $('#clear-history').click(function() {
@@ -121,12 +121,40 @@ $(document).ready(function() {
     if(storage.getItem('formatter')) {
         $('input[name=formatter][value=' + storage.getItem('formatter') + ']').prop('checked', true).change();
     }
-    
+
     applyPreviousLogSelection();
 });
 
 
 socket.on('logData', lineProcessor);
+socket.on('buildComplete', function(data) {
+   let color;
+
+   if (data.complete) {
+       color = 'green';
+   } else {
+       color= 'orange';
+   }
+
+    highlightLog(data.log, color);
+});
+socket.on('baseMonitor', function(data) {
+    let color;
+
+    if (data.crash) {
+        color = 'red';
+    } else {
+        color = 'white';
+    }
+
+    highlightLog(data.log, color);
+});
+
+function highlightLog(logName, color) {
+    $('#logs .log-label')
+        .filter(function() {return $(this).text() === logName})
+        .css('color', color);
+}
 
 function lineProcessor(data, isRecursive) {
     var el = shell.get(0);
@@ -182,7 +210,7 @@ function processBuffer(el) {
     scrollBuffer.forEach(function(data) {
         lineProcessor(data, true);
     });
-    
+
     scrollBuffer = [];
 }
 
@@ -217,12 +245,12 @@ if(typeof(Storage) !== "undefined") {
 
 function applyPreviousLogSelection() {
     var logSelection = storage.getItem('logSelection', {});
-    
+
     Object.keys(logSelection).forEach(function(key) {
        $('#logs input:checkbox[value="' + key + '"]').prop('checked', true);
        toggleLog(key, true);
     });
-    
+
     storage.removeItem('logSelection');
 }
 
@@ -230,5 +258,5 @@ function toggleLog(log, checked) {
     socket.emit('toggleLog', {
         log     : log,
         enabled : checked
-    }); 
+    });
 }

@@ -30,6 +30,8 @@
   "scripts": {
     "start": "node index.js",
     "inspect": "node index.js --enableInspector",
+    "liveReload": "node index.js --enableLiveReload",
+    "all": "node index.js --enableInspector --enableLiveReload",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "MIT",
@@ -39,6 +41,7 @@
     "minimist": "^1.2.0",
     "moment": "2.13.0",
     "morgan": "1.7.0",
+    "ramda": "^0.24.1",
     "socket.io": "1.4.8",
     "tail": "1.1.0"
   }
